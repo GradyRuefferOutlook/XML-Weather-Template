@@ -181,7 +181,6 @@ namespace XMLWeather
 
             ExtractForecast();
             ExtractCurrent();
-            days.Add(new Day());
 
             // open weather screen for todays weather
             this.Controls.Add(new CurrentWeatherScreen());
