@@ -52,8 +52,9 @@ namespace XMLWeather
         Image sun = Properties.Resources.Sunrise, moon = Properties.Resources.Sunset;
         Rectangle dayUp, dayDown;
         Image upB = Properties.Resources.UpBlock, downB = Properties.Resources.DownBlock, blockB = Properties.Resources.BlockBack;
-        Image monday = Properties.Resources.Monday, tuesday = Properties.Resources.Tuesday, wednesday = Properties.Resources.Wednesday, thursday = Properties.Resources.Thursday, friday = Properties.Resources.Friday, saturday = Properties.Resources.Saturday, sunday = Properties.Resources.Sunday;
-
+        Image[] daysOfWeek = { Properties.Resources.Monday, Properties.Resources.Tuesday, Properties.Resources.Wednesday, Properties.Resources.Thursday, Properties.Resources.Friday, Properties.Resources.Saturday, Properties.Resources.Sunday };
+        Image displayDate;
+        int dOW;
         public CurrentWeatherScreen()
         {
             InitializeComponent();
@@ -82,8 +83,8 @@ namespace XMLWeather
 
             user = new Lovemp((groundRect.Width / 2) - (user.w / 2), groundRect.Y - user.h - 5);
 
-            dayUp = new Rectangle((this.Width / 2) - 50 - 25, groundRect.Y - (user.h * 2) - 50, 50, 50);
-            dayDown = new Rectangle((this.Width / 2) + 50 - 25, groundRect.Y - (user.h * 2) - 50, 50, 50);
+            dayUp = new Rectangle((this.Width / 2) - 100 - 25, groundRect.Y - (user.h * 2) - 50, 50, 50);
+            dayDown = new Rectangle((this.Width / 2) + 100 - 25, groundRect.Y - (user.h * 2) - 50, 50, 50);
             Floors.Add(dayUp);
             Floors.Add(dayDown);
 
@@ -139,8 +140,10 @@ namespace XMLWeather
 
             lastUpdated = time.TimeOfDay.ToString().Substring(0, 8);
 
-            DayDisplay = new Rectangle(sunRiseD.X + sunRiseD.Width, 0, sunSetD.X - sunRiseD.X, 100);
-            weatherDisplay = new Rectangle(DayDisplay.X + (DayDisplay.Width / 6), DayDisplay.Y, (DayDisplay.Width / 3) * 2, 50);
+            DayDisplay = new Rectangle((this.Width / 2) - ((sunSetD.X - (sunRiseD.X + sunRiseD.Width)) / 2), 0, sunSetD.X - (sunRiseD.X + sunRiseD.Width), 50);
+            weatherDisplay = new Rectangle((DayDisplay.X + DayDisplay.Width / 2) - (((DayDisplay.Width / 3) * 4) / 2), DayDisplay.Y + DayDisplay.Height, (DayDisplay.Width / 3) * 4, 25);
+
+            DetermineDayOfWeek();
 
             timeOp.Enabled = true;
         }
@@ -220,10 +223,10 @@ namespace XMLWeather
 
             e.Graphics.DrawString("L.A.T.:", uiFont, textBrush, new Point(LonBox.Location.X + LonBox.Width + 5, groundRect.Y + 2 + 5));
 
-            //e.Graphics.DrawImage(monday, DayDisplay);
-            //e.Graphics.DrawImage(barImage, weatherDisplay);
-            //e.Graphics.DrawString(Form1.days[0].conditionName, uiFont, textBrush, weatherDisplay);
-        } 
+            e.Graphics.DrawImage(displayDate, DayDisplay);
+            e.Graphics.DrawImage(barImage, weatherDisplay);
+            e.Graphics.DrawString(Form1.days[chosenDay].date + ": " + Form1.days[chosenDay].conditionName.Substring(0, 1).ToUpper() + Form1.days[chosenDay].conditionName.Substring(1, Form1.days[chosenDay].conditionName.Length - 1), uiFont, textBrush, weatherDisplay);
+        }
 
         void ConvertTemp()
         {
@@ -360,8 +363,60 @@ namespace XMLWeather
 
             user.Move(Floors, this);
 
+            DetermineDayOfWeek();
+
             Refresh();
 
+        }
+
+        void DetermineDayOfWeek()
+        {
+            if (dOW == null)
+            {
+                switch (time.DayOfWeek)
+                {
+                    case DayOfWeek.Monday:
+                        {
+                            dOW = 0;
+                            break;
+                        }
+                    case DayOfWeek.Tuesday:
+                        {
+                            dOW = 1;
+                            break;
+                        }
+                    case DayOfWeek.Wednesday:
+                        {
+                            dOW = 2;
+                            break;
+                        }
+                    case DayOfWeek.Thursday:
+                        {
+                            dOW = 3;
+                            break;
+                        }
+                    case DayOfWeek.Friday:
+                        {
+                            dOW = 4;
+                            break;
+                        }
+                    case DayOfWeek.Saturday:
+                        {
+                            dOW = 5;
+                            break;
+                        }
+                    case DayOfWeek.Sunday:
+                        {
+                            dOW = 6;
+                            break;
+                        }
+                }
+                displayDate = daysOfWeek[dOW];
+            }
+            else
+            {
+                displayDate = daysOfWeek[(dOW + chosenDay) % 7];
+            }
         }
 
         void AdjustTemps()
@@ -500,19 +555,24 @@ namespace XMLWeather
                 {
                     try
                     {
+                        Form1.days.Clear();
+
                         Form1.lon = LonBox.Text;
                         Form1.lat = LatBox.Text;
 
                         Form1.ReverseGeocoding();
 
-                        Form1.ExtractCurrent();
                         Form1.ExtractForecast();
+                        Form1.ExtractCurrent();
 
                         setTextBox();
                         ConvertTemp();
+                        chosenDay = 0;
+                        Form1.days.RemoveAt(Form1.days.Count - 1);
                     }
                     catch
                     {
+                        chosenDay = 0;
                         setTextBox();
                         ConvertTemp();
                         LonBox.Text = "INVALID";
@@ -523,18 +583,24 @@ namespace XMLWeather
                 {
                     try
                     {
+                        Form1.days.Clear();
+
                         Form1.area = LocationBox.Text;
 
                         Form1.ForwardGeocoding();
 
-                        Form1.ExtractCurrent();
                         Form1.ExtractForecast();
+                        Form1.ExtractCurrent();
+                        
+                        chosenDay = 0;
 
                         setTextBox();
                         ConvertTemp();
+                        Form1.days.RemoveAt(Form1.days.Count - 1);
                     }
                     catch
                     {
+                        chosenDay = 0;
                         setTextBox();
                         ConvertTemp();
                         LocationBox.Text = "INVALID";

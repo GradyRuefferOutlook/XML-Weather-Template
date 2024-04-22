@@ -105,11 +105,11 @@ namespace XMLWeather
             XmlReader reader;
             try
             {
-                reader = XmlReader.Create("http://api.openweathermap.org/data/2.5/forecast/daily?q="  + city + ", " + state + ", " + countryCode + "&mode=xml&units=metric&cnt=7&appid=3f2e224b815c0ed45524322e145149f0");
+                reader = XmlReader.Create("http://api.openweathermap.org/data/2.5/forecast/daily?q="  + city + ", " + state + ", " + countryCode + "&mode=xml&units=metric&cnt=15&appid=3f2e224b815c0ed45524322e145149f0");
             }
             catch
             {
-                reader = XmlReader.Create("http://api.openweathermap.org/data/2.5/forecast/daily?q=" + area + "&mode=xml&units=metric&cnt=7&appid=3f2e224b815c0ed45524322e145149f0");
+                reader = XmlReader.Create("http://api.openweathermap.org/data/2.5/forecast/daily?q=" + area + "&mode=xml&units=metric&cnt=11&appid=3f2e224b815c0ed45524322e145149f0");
             }
 
             while (reader.Read())
@@ -181,6 +181,8 @@ namespace XMLWeather
 
             ExtractForecast();
             ExtractCurrent();
+
+            days.RemoveAt(days.Count - 1);
 
             // open weather screen for todays weather
             this.Controls.Add(new CurrentWeatherScreen());
