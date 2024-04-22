@@ -294,6 +294,42 @@
   <ItemGroup>
     <None Include="Resources\LovempRightCycle %289%29.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ColdBase.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\HotBase.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OIG2__10_-removebg-preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OIG3__11_-removebg-preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OIG3__10_-removebg-preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ThermBarLeft.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ThermBarRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OIG2__11_-removebg-preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\OIG3-removebg-preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\1jjn.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\CurrentBar.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\360_F_502568998_w4ZxXY7tFHtEaHTHqiaVPHX5pnhJj5AX-removebg-preview %281%29.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Esri.ArcGISRuntime.runtimes.win.200.4.0\build\net472\Esri.ArcGISRuntime.runtimes.win.targets" Condition="Exists('..\packages\Esri.ArcGISRuntime.runtimes.win.200.4.0\build\net472\Esri.ArcGISRuntime.runtimes.win.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

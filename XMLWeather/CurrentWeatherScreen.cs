@@ -10,19 +10,45 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Xamarin.Forms.Xaml;
 
+
+//Doubleclick on element to switch between active character and text box
 namespace XMLWeather
 {
     public partial class CurrentWeatherScreen : UserControl
     {
+        /*Follow Paint for Design
+         * 
+         * Make Working temp displays
+         * Add x Floor collisions
+         * Add wall jump
+         * 
+         * Add sunrise/set times in corner sun and moon
+         * 
+         * Add day images to top of screen
+         * Add box beneath for condition text
+         * 
+         * Add day shift blocks
+         * MAKE SURE TO CAP THEM
+         * 
+         * Add area input
+         * MAKE SURE TO ADD try and catch TO PREVENT BREAKING
+         * Code start as reload/load new based on input
+         * Set chosen day to 0
+         * Update last reload time
+         * 
+         * ASK MR. T ABOUT SAVING TO CLOUD (For Fun >:))
+         */
         int chosenDay = 0;
         Rectangle backdropHolder = new Rectangle();
         Image[] weather = new Image[8];
         Bitmap[] backdrop = new Bitmap[8];
         double[] opacities = new double[8];
         DateTime time;
+        String lastUpdated;
         Rectangle groundRect = new Rectangle();
-        Lovemp user = new Lovemp(0,0);
+        Lovemp user = new Lovemp(0, 0);
         Image startButton = Properties.Resources.Start;
         Image arrowButton = Properties.Resources.ArrowButton;
         Image barImage = Properties.Resources.Bar;
@@ -30,14 +56,28 @@ namespace XMLWeather
         bool isNight = false;
         public static Font timeFont = new Font(new FontFamily("Perpetua"), 15, FontStyle.Bold, GraphicsUnit.Pixel);
         public static Font dayFont = new Font(new FontFamily("Perpetua"), 17, FontStyle.Bold, GraphicsUnit.Pixel);
+        public static Font tempFont = new Font(new FontFamily("Magneto"), 15, FontStyle.Bold, GraphicsUnit.Pixel);
+        public static Font explainFont = new Font(new FontFamily("Magneto"), 10, FontStyle.Bold, GraphicsUnit.Pixel);
+        public static Font uiFont = new Font(new FontFamily("Microsoft YaHei UI"), 18, FontStyle.Bold, GraphicsUnit.Pixel);
         SolidBrush textBrush = new SolidBrush(Color.White);
         List<Rectangle> Floors = new List<Rectangle>();
-
-
+        Rectangle startRect, arrowRect, hotBRect, coldBRect, hotTRect, coldTRect, currentBRect, currentTRect;
+        Image thermBH = Properties.Resources.HotBase, thermCH = Properties.Resources.ColdBase, thermCuH = Properties.Resources.CurrentBase;
+        SolidBrush hotBrush = new SolidBrush(Color.Red), coldBrush = new SolidBrush(Color.LightBlue), currentBrush = new SolidBrush(Color.BlueViolet);
+        int highTemp, lowTemp, currentTemp, highTempC, lowTempC, currentTempC, highTempD = 0, lowTempD = 0, currentTempD = 0;
+        Rectangle hotDisplay, coldDisplay, currentDisplay;
+        Image thermCapL = Properties.Resources.ThermBarLeft, thermCapR = Properties.Resources.ThermBarRight, thermCapC = Properties.Resources.CurrentBar;
+        Rectangle thermBarL, thermBarR, thermBarC;
+        int thermWidth = 20;
+        Rectangle sunRiseD, sunSetD, sunRiseT, sunSetT;
+        Rectangle DayDisplay, weatherDisplay;
+        Image sun = Properties.Resources.Sunrise, moon = Properties.Resources.Sunset;
 
         public CurrentWeatherScreen()
         {
             InitializeComponent();
+
+            ConvertTemp();
 
             weather[0] = Properties.Resources.StormBackdrop;
             weather[1] = Properties.Resources.DrizzleBackdrop;
@@ -59,7 +99,7 @@ namespace XMLWeather
 
             groundRect = new Rectangle(0, this.Height - barSize, this.Width, barSize);
 
-            user = new Lovemp((groundRect.Width/ 2) - (user.w / 2), groundRect.Y - user.h - 5);
+            user = new Lovemp((groundRect.Width / 2) - (user.w / 2), groundRect.Y - user.h - 5);
 
 
             for (int i = 0; i < weather.Length; i++)
@@ -69,7 +109,59 @@ namespace XMLWeather
 
             Floors.Add(groundRect);
 
+            startRect = new Rectangle(groundRect.X, groundRect.Y - 2, groundRect.Width / 8, groundRect.Height + 2);
+            Floors.Add(startRect);
+
+            arrowRect = new Rectangle(groundRect.X + groundRect.Width / 8 + Convert.ToInt16(groundRect.Width * 17 / 24) - 10, groundRect.Y, 20, groundRect.Height);
+            Floors.Add(arrowRect);
+
+            hotBRect = new Rectangle(10, groundRect.Y - (user.h * 3) - 100, 100, 100);
+            coldBRect = new Rectangle(this.Width - 110, groundRect.Y - (user.h * 3) - 100, 100, 100);
+            currentBRect = new Rectangle((this.Width / 2) - 131, groundRect.Y - (user.h * 3) - 100, 100, 100);
+
+            Floors.Add(new Rectangle(hotBRect.X + 30, hotBRect.Y, hotBRect.Width - 60, hotBRect.Height));
+            Floors.Add(new Rectangle(coldBRect.X + 30, coldBRect.Y, coldBRect.Width - 60, coldBRect.Height));
+            Floors.Add(new Rectangle(currentBRect.X, currentBRect.Y, currentBRect.Width, currentBRect.Height));
+
+            hotTRect = new Rectangle(hotBRect.X + 21, hotBRect.Y + 40, hotBRect.Width, hotBRect.Height - 40);
+            coldTRect = new Rectangle(coldBRect.X + 21, coldBRect.Y + 40, coldBRect.Width, coldBRect.Height - 40);
+            currentTRect = new Rectangle(currentBRect.X + 21, currentBRect.Y + 35, currentBRect.Width, currentBRect.Height - 40);
+
+            hotDisplay = new Rectangle(0, 0, 0, 0);
+            coldDisplay = new Rectangle(0, 0, 0, 0);
+            currentDisplay = new Rectangle(0, 0, 0, 0);
+
+            thermBarL = new Rectangle(hotBRect.X + (hotBRect.Width / 2) - (thermWidth / 2) - 2, hotBRect.Y - (400 / 2), thermWidth + 4, 400 / 2);
+            thermBarR = new Rectangle(coldBRect.X + (coldBRect.Width / 2) - (thermWidth / 2) - 2, coldBRect.Y - (400 / 2), thermWidth + 4, 400 / 2);
+            thermBarC = new Rectangle((this.Width / 2) - 31, currentBRect.Y + (currentBRect.Height / 2) - 2 - (thermWidth / 2), 324 / 2, thermWidth + 4);
+            Floors.Add(new Rectangle(thermBarL.X, thermBarL.Y, thermBarL.Width, thermBarL.Height + 75));
+            Floors.Add(new Rectangle(thermBarR.X, thermBarR.Y, thermBarR.Width, thermBarR.Height + 75));
+            Floors.Add(new Rectangle(thermBarC.X - 75, thermBarC.Y, thermBarC.Width + 75, thermBarC.Height));
+
+            sunRiseD = new Rectangle(-300, -300, 600, 600);
+            sunSetD = new Rectangle(this.Width - 300, -300, 600, 600);
+
+            LocationBox.Size = new Size(150, 40);
+            LocationBox.Location = new Point(startRect.X + startRect.Width + 100, groundRect.Y + 2 + 5);
+
+            LonBox.Size = new Size(100, 40);
+            LonBox.Location = new Point(LocationBox.Location.X + LocationBox.Width + 60 + 15 + 5, groundRect.Y + 2 + 5);
+
+            LatBox.Size = new Size(100, 40);
+            LatBox.Location = new Point(LonBox.Location.X + LonBox.Width + 60 + 10, groundRect.Y + 2 + 5);
+
+            setTextBox();
+
+            lastUpdated = time.TimeOfDay.ToString().Substring(0, 8);
+
             timeOp.Enabled = true;
+        }
+
+        void setTextBox()
+        {
+            LocationBox.Text = Form1.city + "," + Form1.state + "," + Form1.countryCode;
+            LonBox.Text = Form1.lon;
+            LatBox.Text = Form1.lat;
         }
 
         public static Bitmap ChangeOpacity(Image img, float opacityvalue)
@@ -92,11 +184,14 @@ namespace XMLWeather
                 e.Graphics.DrawImage(backdrop[i], backdropHolder);
             }
 
-            e.Graphics.DrawImage(startButton, new Rectangle(groundRect.X, groundRect.Y - 2, groundRect.Width / 8, groundRect.Height + 2));
+            e.Graphics.DrawImage(sun, sunRiseD);
+            e.Graphics.DrawImage(moon, sunSetD);
+
+            e.Graphics.DrawImage(startButton, startRect);
 
             e.Graphics.DrawImage(barImage, new Rectangle(groundRect.X + groundRect.Width / 8, groundRect.Y, Convert.ToInt16(groundRect.Width * 17 / 24), groundRect.Height));
 
-            e.Graphics.DrawImage(arrowButton, new Rectangle(groundRect.X + groundRect.Width / 8 + Convert.ToInt16(groundRect.Width * 17 / 24) - 10, groundRect.Y, 20, groundRect.Height));
+            e.Graphics.DrawImage(arrowButton, arrowRect);
 
             e.Graphics.DrawImage(timeBarImage, new Rectangle(groundRect.X + groundRect.Width / 8 + Convert.ToInt16(groundRect.Width * 17 / 24) + 10, groundRect.Y, this.Width - (groundRect.X + groundRect.Width / 8 + Convert.ToInt16(groundRect.Width * 17 / 24) + 10), groundRect.Height));
 
@@ -105,6 +200,48 @@ namespace XMLWeather
             e.Graphics.DrawString(time.Date.ToString().Substring(0, 10), timeFont, textBrush, groundRect.X + groundRect.Width / 8 + Convert.ToInt16(groundRect.Width * 17 / 24) + 75, groundRect.Y + 19);
 
             e.Graphics.DrawImage(user.drawImage, user.drawRectangle);
+
+            e.Graphics.DrawImage(thermBH, hotBRect);
+            e.Graphics.DrawImage(thermCH, coldBRect);
+            e.Graphics.DrawImage(thermCuH, currentBRect);
+
+            e.Graphics.DrawString(highTemp + "°K", tempFont, textBrush, hotTRect);
+            e.Graphics.DrawString(lowTemp + "°K", tempFont, textBrush, coldTRect);
+            e.Graphics.DrawString(currentTemp + "°K", tempFont, textBrush, currentTRect);
+            e.Graphics.DrawString("Current", tempFont, textBrush, new Rectangle(currentTRect.X, currentTRect.Y + 15, currentTRect.Width, currentTRect.Height));
+
+            e.Graphics.FillRectangle(hotBrush, hotDisplay);
+            e.Graphics.FillRectangle(coldBrush, coldDisplay);
+            e.Graphics.FillRectangle(currentBrush, currentDisplay);
+
+            e.Graphics.DrawImage(thermCapL, thermBarL);
+            e.Graphics.DrawImage(thermCapR, thermBarR);
+            e.Graphics.DrawImage(thermCapC, thermBarC);
+
+            e.Graphics.DrawString("Location:", uiFont, textBrush, new Point(startRect.X + startRect.Width + 5, groundRect.Y + 2 + 5));
+
+            e.Graphics.DrawLine(new Pen(Color.DarkBlue, 2), new Point(LocationBox.Location.X + LocationBox.Width + 5, groundRect.Y), new Point(LocationBox.Location.X + LocationBox.Width + 5, groundRect.Y + groundRect.Height));
+
+            e.Graphics.DrawString("L.O.N.:", uiFont, textBrush, new Point(LocationBox.Location.X + LocationBox.Width + 10, groundRect.Y + 2 + 5));
+
+            e.Graphics.DrawString("L.A.T.:", uiFont, textBrush, new Point(LonBox.Location.X + LonBox.Width + 5, groundRect.Y + 2 + 5));
+        }
+
+        void ConvertTemp()
+        {
+            highTemp = (int)(Convert.ToDouble(Form1.days[chosenDay].tempHigh) + 273);
+            lowTemp = (int)(Convert.ToDouble(Form1.days[chosenDay].tempLow) + 273);
+            currentTemp = (int)(Convert.ToDouble(Form1.days[chosenDay].currentTemp) + 273);
+
+            int diff = Math.Abs(highTemp - lowTemp);
+
+            highTempC = highTemp - (diff);
+            currentTempC = currentTemp;
+            lowTempC = lowTemp - (10 * diff);
+
+            currentTempD = 0;
+            highTempD = 0;
+            lowTempD = 0;
         }
 
         int DetermineConditions()
@@ -221,10 +358,46 @@ namespace XMLWeather
                 }
             }
 
+            AdjustTemps();
+
             user.Move(Floors, this);
 
             Refresh();
 
+        }
+
+        void AdjustTemps()
+        {
+            if (highTempD < highTempC / 2)
+            {
+                highTempD++;
+            }
+            else if (highTempD > highTempC / 2)
+            {
+                highTempD--;
+            }
+
+            if (lowTempD < lowTempC / 2)
+            {
+                lowTempD++;
+            }
+            else if (lowTempD > lowTempC / 2)
+            {
+                lowTempD--;
+            }
+
+            if (currentTempD < currentTempC / 2)
+            {
+                currentTempD++;
+            }
+            else if (currentTempD > currentTempC / 2)
+            {
+                currentTempD--;
+            }
+
+            hotDisplay = new Rectangle(hotBRect.X + (hotBRect.Width / 2) - (thermWidth / 2), hotBRect.Y - highTempD, thermWidth, highTempD);
+            coldDisplay = new Rectangle(coldBRect.X + (coldBRect.Width / 2) - (thermWidth / 2), coldBRect.Y - lowTempD, thermWidth, lowTempD);
+            currentDisplay = new Rectangle(currentBRect.X + currentBRect.Width, currentBRect.Y + (currentBRect.Height / 2) - (thermWidth / 2), currentTempD, thermWidth);
         }
 
         void DetermineNight()
@@ -251,7 +424,7 @@ namespace XMLWeather
 
         private void CurrentWeatherScreen_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            switch(e.KeyCode)
+            switch (e.KeyCode)
             {
                 case Keys.A:
                     user.KeyInput(0, false);
@@ -302,6 +475,77 @@ namespace XMLWeather
                 case Keys.W:
                     user.KeyInput(6, true);
                     break;
+            }
+        }
+
+        private void CurrentWeatherScreen_MouseDown(object sender, MouseEventArgs e)
+        {
+            Rectangle mousePoint = new Rectangle(Cursor.Position.X - Form1.cursorAdjX, Cursor.Position.Y - Form1.cursorAdjY, 1, 1);
+
+            if (mousePoint.IntersectsWith(groundRect))
+            {
+                LocationBox.Enabled = true;
+                LonBox.Enabled = true;
+                LatBox.Enabled = true;
+            }
+            else
+            {
+                LocationBox.Enabled = false;
+                LonBox.Enabled = false;
+                LatBox.Enabled = false;
+                this.Focus();
+            }
+
+            if (mousePoint.IntersectsWith(startRect))
+            {
+                if (LonBox.Text != Form1.lon || LatBox.Text != Form1.lat)
+                {
+                    try
+                    {
+                        Form1.lon = LonBox.Text;
+                        Form1.lat = LatBox.Text;
+
+                        Form1.ReverseGeocoding();
+
+                        Form1.ExtractCurrent();
+                        //Form1.ExtractForecast();
+
+                        setTextBox();
+                        ConvertTemp();
+                    }
+                    catch
+                    {
+                        setTextBox();
+                        ConvertTemp();
+                        LonBox.Text = "INVALID";
+                        LatBox.Text = "INVALID";
+                    }
+                }
+                else
+                {
+                    try
+                    {
+                        Form1.area = LocationBox.Text;
+
+                        Form1.ForwardGeocoding();
+
+                        Form1.ExtractCurrent();
+                        //Form1.ExtractForecast();
+
+                        setTextBox();
+                        ConvertTemp();
+                    }
+                    catch
+                    {
+                        setTextBox();
+                        ConvertTemp();
+                        LocationBox.Text = "INVALID";
+                    }
+                }
+            }
+            else if (mousePoint.IntersectsWith(arrowRect))
+            {
+
             }
         }
     }

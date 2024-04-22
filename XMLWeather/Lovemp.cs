@@ -134,13 +134,13 @@ namespace XMLWeather
             }
             else
             {
-                spDown = false;
                 yS -= Convert.ToSingle(-(jumpAdjust) * (jumpTime + 200) * (jumpTime - 200) * 2);
             }
 
             if (jumpTime == 0)
             {
                 jumping = false;
+                spDown = false;
             }
 
             y -= yS;
@@ -154,16 +154,65 @@ namespace XMLWeather
                     //Hitting your Head or Feet?
                     if (Math.Abs((prevArea.Y + h) - floor.Y) > Math.Abs(prevArea.Y - (floor.Y + floor.Height)))
                     {
-                        jumping = false;
-                        y = (floor.Y + floor.Height);
-                        yS = 0;
+                        //More your Head or Side
+                        if (Math.Abs(prevArea.Y - (floor.Y + floor.Height)) < Math.Abs((prevArea.X + w) - floor.X) || Math.Abs(prevArea.Y - (floor.Y + floor.Height)) < Math.Abs(prevArea.X - (floor.X + floor.Width)))
+                        {
+                            jumping = false;
+                            y = (floor.Y + floor.Height);
+                            yS = 0;
+                        } 
+                        else
+                        {
+                            if (Math.Abs((prevArea.X + w) - floor.X) > Math.Abs(prevArea.X - (floor.X + floor.Width)))
+                            {
+                                x = (floor.X + floor.Width);
+                                if (spDown)
+                                {
+                                    xS = 25;
+                                    yS = 25;
+                                }
+                            }
+                            else
+                            {
+                                x = (floor.X - w);
+                                if (spDown)
+                                {
+                                    xS = -25;
+                                    yS = 25;
+                                }
+                            }
+                        }
                     }
                     else
                     {
-                        canJump = true;
-                        jumpTime = jumpTimeSet;
-                        y = floor.Y - h;
-                        yS = 0;
+                        if (Math.Abs((prevArea.Y + h) - floor.Y) < Math.Abs((prevArea.X + w) - floor.X) || Math.Abs((prevArea.Y + h) - floor.Y) < Math.Abs(prevArea.X - (floor.X + floor.Width)))
+                        {
+                            canJump = true;
+                            jumpTime = jumpTimeSet;
+                            y = floor.Y - h;
+                            yS = 0;
+                        }
+                        else
+                        {
+                            if (Math.Abs((prevArea.X + w) - floor.X) > Math.Abs(prevArea.X - (floor.X + floor.Width)))
+                            {
+                                x = (floor.X + floor.Width);
+                                if (spDown)
+                                {
+                                    xS = 25;
+                                    yS = 25;
+                                }
+                            }
+                            else
+                            {
+                                x = (floor.X - w);
+                                if (spDown)
+                                {
+                                    xS = -25;
+                                    yS = 25;
+                                }
+                            }
+                        }
                     }
 
                     Place();
