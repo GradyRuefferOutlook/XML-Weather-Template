@@ -42,6 +42,7 @@
             // 
             // LocationBox
             // 
+            this.LocationBox.Enabled = false;
             this.LocationBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LocationBox.Location = new System.Drawing.Point(252, 114);
             this.LocationBox.Name = "LocationBox";
@@ -50,6 +51,7 @@
             // 
             // LonBox
             // 
+            this.LonBox.Enabled = false;
             this.LonBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LonBox.Location = new System.Drawing.Point(400, 323);
             this.LonBox.Name = "LonBox";
@@ -58,6 +60,7 @@
             // 
             // LatBox
             // 
+            this.LatBox.Enabled = false;
             this.LatBox.Font = new System.Drawing.Font("Microsoft YaHei UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.LatBox.Location = new System.Drawing.Point(408, 331);
             this.LatBox.Name = "LatBox";
