@@ -330,6 +330,30 @@
   <ItemGroup>
     <None Include="Resources\360_F_502568998_w4ZxXY7tFHtEaHTHqiaVPHX5pnhJj5AX-removebg-preview %281%29.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\il_1588xN.1028207185_35tu-removebg-preview.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Sunday-2024-04-22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Saturday-2024-04-22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Friday-2024-04-22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Thursday-2024-04-22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Wednesday-2024-04-22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Tuesday-2024-04-22.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Monday-2024-04-22.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Esri.ArcGISRuntime.runtimes.win.200.4.0\build\net472\Esri.ArcGISRuntime.runtimes.win.targets" Condition="Exists('..\packages\Esri.ArcGISRuntime.runtimes.win.200.4.0\build\net472\Esri.ArcGISRuntime.runtimes.win.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

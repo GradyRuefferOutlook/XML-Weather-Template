@@ -83,6 +83,16 @@ namespace XMLWeather.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap BlockBack {
+            get {
+                object obj = ResourceManager.GetObject("BlockBack", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap CloudyBackdrop {
             get {
                 object obj = ResourceManager.GetObject("CloudyBackdrop", resourceCulture);
@@ -156,6 +166,16 @@ namespace XMLWeather.Properties {
         internal static System.Drawing.Bitmap ForecastSign {
             get {
                 object obj = ResourceManager.GetObject("ForecastSign", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Friday {
+            get {
+                object obj = ResourceManager.GetObject("Friday", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -533,6 +553,16 @@ namespace XMLWeather.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Monday {
+            get {
+                object obj = ResourceManager.GetObject("Monday", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap NightBackdrop {
             get {
                 object obj = ResourceManager.GetObject("NightBackdrop", resourceCulture);
@@ -563,6 +593,16 @@ namespace XMLWeather.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Saturday {
+            get {
+                object obj = ResourceManager.GetObject("Saturday", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SnowyBackdrop {
             get {
                 object obj = ResourceManager.GetObject("SnowyBackdrop", resourceCulture);
@@ -586,6 +626,16 @@ namespace XMLWeather.Properties {
         internal static System.Drawing.Bitmap StormBackdrop {
             get {
                 object obj = ResourceManager.GetObject("StormBackdrop", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Sunday {
+            get {
+                object obj = ResourceManager.GetObject("Sunday", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -633,6 +683,16 @@ namespace XMLWeather.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Thursday {
+            get {
+                object obj = ResourceManager.GetObject("Thursday", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap TimeBar {
             get {
                 object obj = ResourceManager.GetObject("TimeBar", resourceCulture);
@@ -643,9 +703,29 @@ namespace XMLWeather.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap Tuesday {
+            get {
+                object obj = ResourceManager.GetObject("Tuesday", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap UpBlock {
             get {
                 object obj = ResourceManager.GetObject("UpBlock", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Wednesday {
+            get {
+                object obj = ResourceManager.GetObject("Wednesday", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

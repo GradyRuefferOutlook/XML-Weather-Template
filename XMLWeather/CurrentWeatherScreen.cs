@@ -18,29 +18,7 @@ namespace XMLWeather
 {
     public partial class CurrentWeatherScreen : UserControl
     {
-        /*Follow Paint for Design
-         * 
-         * Make Working temp displays
-         * Add x Floor collisions
-         * Add wall jump
-         * 
-         * Add sunrise/set times in corner sun and moon
-         * 
-         * Add day images to top of screen
-         * Add box beneath for condition text
-         * 
-         * Add day shift blocks
-         * MAKE SURE TO CAP THEM
-         * 
-         * Add area input
-         * MAKE SURE TO ADD try and catch TO PREVENT BREAKING
-         * Code start as reload/load new based on input
-         * Set chosen day to 0
-         * Update last reload time
-         * 
-         * ASK MR. T ABOUT SAVING TO CLOUD (For Fun >:))
-         */
-        int chosenDay = 0;
+        public static int chosenDay = 0;
         Rectangle backdropHolder = new Rectangle();
         Image[] weather = new Image[8];
         Bitmap[] backdrop = new Bitmap[8];
@@ -64,7 +42,7 @@ namespace XMLWeather
         Rectangle startRect, arrowRect, hotBRect, coldBRect, hotTRect, coldTRect, currentBRect, currentTRect;
         Image thermBH = Properties.Resources.HotBase, thermCH = Properties.Resources.ColdBase, thermCuH = Properties.Resources.CurrentBase;
         SolidBrush hotBrush = new SolidBrush(Color.Red), coldBrush = new SolidBrush(Color.LightBlue), currentBrush = new SolidBrush(Color.BlueViolet);
-        int highTemp, lowTemp, currentTemp, highTempC, lowTempC, currentTempC, highTempD = 0, lowTempD = 0, currentTempD = 0;
+        public static int highTemp, lowTemp, currentTemp, highTempC, lowTempC, currentTempC, highTempD = 0, lowTempD = 0, currentTempD = 0;
         Rectangle hotDisplay, coldDisplay, currentDisplay;
         Image thermCapL = Properties.Resources.ThermBarLeft, thermCapR = Properties.Resources.ThermBarRight, thermCapC = Properties.Resources.CurrentBar;
         Rectangle thermBarL, thermBarR, thermBarC;
@@ -72,6 +50,9 @@ namespace XMLWeather
         Rectangle sunRiseD, sunSetD, sunRiseT, sunSetT;
         Rectangle DayDisplay, weatherDisplay;
         Image sun = Properties.Resources.Sunrise, moon = Properties.Resources.Sunset;
+        Rectangle dayUp, dayDown;
+        Image upB = Properties.Resources.UpBlock, downB = Properties.Resources.DownBlock, blockB = Properties.Resources.BlockBack;
+        Image monday = Properties.Resources.Monday, tuesday = Properties.Resources.Tuesday, wednesday = Properties.Resources.Wednesday, thursday = Properties.Resources.Thursday, friday = Properties.Resources.Friday, saturday = Properties.Resources.Saturday, sunday = Properties.Resources.Sunday;
 
         public CurrentWeatherScreen()
         {
@@ -101,6 +82,10 @@ namespace XMLWeather
 
             user = new Lovemp((groundRect.Width / 2) - (user.w / 2), groundRect.Y - user.h - 5);
 
+            dayUp = new Rectangle((this.Width / 2) - 50 - 25, groundRect.Y - (user.h * 2) - 50, 50, 50);
+            dayDown = new Rectangle((this.Width / 2) + 50 - 25, groundRect.Y - (user.h * 2) - 50, 50, 50);
+            Floors.Add(dayUp);
+            Floors.Add(dayDown);
 
             for (int i = 0; i < weather.Length; i++)
             {
@@ -154,6 +139,9 @@ namespace XMLWeather
 
             lastUpdated = time.TimeOfDay.ToString().Substring(0, 8);
 
+            DayDisplay = new Rectangle(sunRiseD.X + sunRiseD.Width, 0, sunSetD.X - sunRiseD.X, 100);
+            weatherDisplay = new Rectangle(DayDisplay.X + (DayDisplay.Width / 6), DayDisplay.Y, (DayDisplay.Width / 3) * 2, 50);
+
             timeOp.Enabled = true;
         }
 
@@ -183,6 +171,12 @@ namespace XMLWeather
             {
                 e.Graphics.DrawImage(backdrop[i], backdropHolder);
             }
+
+            e.Graphics.DrawImage(blockB, dayUp);
+            e.Graphics.DrawImage(blockB, dayDown);
+
+            e.Graphics.DrawImage(upB, dayUp);
+            e.Graphics.DrawImage(downB, dayDown);
 
             e.Graphics.DrawImage(sun, sunRiseD);
             e.Graphics.DrawImage(moon, sunSetD);
@@ -225,7 +219,11 @@ namespace XMLWeather
             e.Graphics.DrawString("L.O.N.:", uiFont, textBrush, new Point(LocationBox.Location.X + LocationBox.Width + 10, groundRect.Y + 2 + 5));
 
             e.Graphics.DrawString("L.A.T.:", uiFont, textBrush, new Point(LonBox.Location.X + LonBox.Width + 5, groundRect.Y + 2 + 5));
-        }
+
+            //e.Graphics.DrawImage(monday, DayDisplay);
+            //e.Graphics.DrawImage(barImage, weatherDisplay);
+            //e.Graphics.DrawString(Form1.days[0].conditionName, uiFont, textBrush, weatherDisplay);
+        } 
 
         void ConvertTemp()
         {
@@ -508,7 +506,7 @@ namespace XMLWeather
                         Form1.ReverseGeocoding();
 
                         Form1.ExtractCurrent();
-                        //Form1.ExtractForecast();
+                        Form1.ExtractForecast();
 
                         setTextBox();
                         ConvertTemp();
@@ -530,7 +528,7 @@ namespace XMLWeather
                         Form1.ForwardGeocoding();
 
                         Form1.ExtractCurrent();
-                        //Form1.ExtractForecast();
+                        Form1.ExtractForecast();
 
                         setTextBox();
                         ConvertTemp();

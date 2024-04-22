@@ -160,6 +160,30 @@ namespace XMLWeather
                             jumping = false;
                             y = (floor.Y + floor.Height);
                             yS = 0;
+                            if (floor == Floors[0])
+                            {
+                                CurrentWeatherScreen.chosenDay++;
+                                CurrentWeatherScreen.currentTempD = 0;
+                                CurrentWeatherScreen.highTempD = 0;
+                                CurrentWeatherScreen.lowTempD = 0;
+
+                                if (CurrentWeatherScreen.chosenDay > Form1.days.Count - 1)
+                                {
+                                    CurrentWeatherScreen.chosenDay = Form1.days.Count - 1;
+                                }
+                            } 
+                            else if (floor == Floors[1])
+                            {
+                                CurrentWeatherScreen.chosenDay--;
+                                CurrentWeatherScreen.currentTempD = 0;
+                                CurrentWeatherScreen.highTempD = 0;
+                                CurrentWeatherScreen.lowTempD = 0;
+
+                                if (CurrentWeatherScreen.chosenDay < 0)
+                                {
+                                    CurrentWeatherScreen.chosenDay = 0;
+                                }
+                            }
                         } 
                         else
                         {
