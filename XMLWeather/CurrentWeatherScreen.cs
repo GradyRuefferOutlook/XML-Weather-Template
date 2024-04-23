@@ -232,7 +232,14 @@ namespace XMLWeather
         {
             highTemp = (int)(Convert.ToDouble(Form1.days[chosenDay].tempHigh) + 273);
             lowTemp = (int)(Convert.ToDouble(Form1.days[chosenDay].tempLow) + 273);
-            currentTemp = (int)(Convert.ToDouble(Form1.days[chosenDay].currentTemp) + 273);
+            try
+            {
+                currentTemp = (int)(Convert.ToDouble(Form1.days[chosenDay].currentTemp) + 273);
+            }
+            catch
+            {
+
+            }
 
             int diff = Math.Abs(highTemp - lowTemp);
 
@@ -361,7 +368,14 @@ namespace XMLWeather
 
             AdjustTemps();
 
+            int currentDay = chosenDay;
+
             user.Move(Floors, this);
+
+            if (currentDay != chosenDay)
+            {
+                ConvertTemp();
+            }
 
             DetermineDayOfWeek();
 
