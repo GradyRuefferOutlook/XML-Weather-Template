@@ -54,7 +54,7 @@ namespace XMLWeather
         Image upB = Properties.Resources.UpBlock, downB = Properties.Resources.DownBlock, blockB = Properties.Resources.BlockBack;
         Image[] daysOfWeek = { Properties.Resources.Monday, Properties.Resources.Tuesday, Properties.Resources.Wednesday, Properties.Resources.Thursday, Properties.Resources.Friday, Properties.Resources.Saturday, Properties.Resources.Sunday };
         Image displayDate;
-        int dOW;
+        int dOW = 999;
         public CurrentWeatherScreen()
         {
             InitializeComponent();
@@ -143,6 +143,7 @@ namespace XMLWeather
             DayDisplay = new Rectangle((this.Width / 2) - ((sunSetD.X - (sunRiseD.X + sunRiseD.Width)) / 2), 0, sunSetD.X - (sunRiseD.X + sunRiseD.Width), 50);
             weatherDisplay = new Rectangle((DayDisplay.X + DayDisplay.Width / 2) - (((DayDisplay.Width / 3) * 4) / 2), DayDisplay.Y + DayDisplay.Height, (DayDisplay.Width / 3) * 4, 25);
 
+            time = DateTime.Now;
             DetermineDayOfWeek();
 
             timeOp.Enabled = true;
@@ -385,7 +386,7 @@ namespace XMLWeather
 
         void DetermineDayOfWeek()
         {
-            if (dOW == null)
+            if (dOW > 100)
             {
                 switch (time.DayOfWeek)
                 {
